@@ -1,5 +1,3 @@
----
-
 # 🎾 Monitor de Precios: Head Speed Pro Legend
 
 Este proyecto es un bot autónomo diseñado para rastrear el precio de la raqueta **Head Speed Pro Legend 2025** en Tennis-Point. Utiliza técnicas de web scraping, almacenamiento en base de datos PostgreSQL y notificaciones automáticas vía Telegram.
