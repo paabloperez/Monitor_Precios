@@ -1,9 +1,12 @@
+# main.py -> el que inicia el monitor, hace el seguimiento del precio, compara con el último precio guardado y decide cuándo enviar notificaciones a Telegram. 
+#            Es el corazón del bot, donde se orquesta todo el proceso.
 import time
 from tracker import rastrear_raqueta
 from database import guardar_precio, crear_tablas, SessionLocal, RegistroPrecio
 from notificador import enviar_telegram
 from sqlalchemy import desc
 
+# Función "Memoria" para obtener el último precio guardado en la base de datos. Antes de decidir si avisarte al móvil, el bot necesita saber qué pasó la última vez.
 def obtener_ultimo_precio():
     db = SessionLocal()
     # Buscamos el último registro guardado ordenado por fecha
@@ -19,10 +22,10 @@ def iniciar_monitor():
     crear_tablas()
 
     while True:
-        precio_actual = rastrear_raqueta(url)
-        ultimo_precio_guardado = obtener_ultimo_precio()
+        precio_actual = rastrear_raqueta(url)               # rastrea 
+        ultimo_precio_guardado = obtener_ultimo_precio()    # consulta
         
-        if precio_actual:
+        if precio_actual:                                   # decide
             print(f"🔍 Precio actual: {precio_actual} € | Último en DB: {ultimo_precio_guardado} €")
             
             # 1. Si el precio ha bajado respecto a la última vez que lo vimos
@@ -37,7 +40,7 @@ def iniciar_monitor():
             guardar_precio(nombre_prod, precio_actual)
         
         print("💤 Durmiendo 6 horas...")
-        time.sleep(21600) 
+        time.sleep(21600) # duerme 6 horas (21600 segundos) antes de volver a revisar el precio
 
 if __name__ == "__main__":
     iniciar_monitor()

@@ -1,3 +1,5 @@
+# database.py -> el que guarda y organiza los datos en la base de datos.
+#                Es el que se encarga de crear la tabla, guardar los precios y recuperar los datos históricos.
 import os
 from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, Float, String, DateTime
@@ -11,15 +13,18 @@ load_dotenv()
 # Configuración de la URL de la base de datos (usando las variables del .env)
 # Formato: postgresql://usuario:password@host:puerto/nombre_db
 DB_URL = f"postgresql://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT', '5432')}/{os.getenv('DB_NAME')}"
+
 # El "Engine" es el motor de conexión
 engine = create_engine(DB_URL)
+
+# La "SessionLocal" es la clase que usaremos para crear sesiones de conexión a la base de datos. Cada vez que queramos interactuar con la base de datos, crearemos una sesión a partir de esta clase.
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 Base = declarative_base()
 
 # --- MODELO DE LA TABLA ---
 class RegistroPrecio(Base):
     __tablename__ = "precios_historico"
-
     id = Column(Integer, primary_key=True, index=True)
     nombre_producto = Column(String)
     precio = Column(Float)
@@ -29,7 +34,7 @@ class RegistroPrecio(Base):
 def crear_tablas():
     Base.metadata.create_all(bind=engine)
 
-# Función para guardar un nuevo precio
+# Función para guardar un nuevo precio: abre una sesión -> crea un nuevo registro -> lo añade a la sesión -> hace commit para guardar en la base de datos -> refresca el objeto para obtener su ID generado -> cierra la sesión -> devuelve el nuevo registro creado.
 def guardar_precio(nombre, valor):
     db = SessionLocal()
     nuevo_registro = RegistroPrecio(nombre_producto=nombre, precio=valor)

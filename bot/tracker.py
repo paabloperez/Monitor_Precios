@@ -1,14 +1,19 @@
-import requests
-from bs4 import BeautifulSoup
-import json
+# tracker.py -> es el que sale a internet a buscar el dato del precio de la raqueta.
+#               Es el que se encarga de hacer el web scraping y devolver el precio actual. Si no encuentra el precio, devuelve None.
+
+import requests                 # Es la librería que usaremos para hacer las peticiones HTTP a la página web. Nos trae el contenido HTML de la página.
+from bs4 import BeautifulSoup   # Es la librería que usaremos para analizar el contenido HTML y extraer el precio. Nos permite navegar por la estructura del HTML de forma sencilla.
+import json                     # Es la librería que usaremos para manejar los datos en formato JSON, especialmente para analizar los datos estructurados (LD+JSON) que muchas páginas incluyen para SEO.
 
 def rastrear_raqueta(url):
-    headers = {
+    
+    headers = {              
+        # Es importante usar un User-Agent para que la página no nos bloquee por ser un bot. Simulamos ser un navegador común.   
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
     }
 
     def limpiar_precio(valor):
-        """Convierte '204,95' o 204.95 en un float válido."""
+        # Esta función convierte el precio que puede venir en formato '204,95' o '204.95' a un float válido. Reemplaza la coma por punto y luego intenta convertirlo a float. Si no se puede convertir, devuelve None.
         try:
             return float(str(valor).replace(',', '.'))
         except (ValueError, TypeError):
@@ -52,6 +57,7 @@ def rastrear_raqueta(url):
         if meta_precio:
             return limpiar_precio(meta_precio["content"])
 
+    # Si no encontramos el precio, devolvemos None
     except Exception as e:
         print(f"Error: {e}")
     return None
