@@ -1,0 +1,26 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Entornos virtuales
+venv/
+env/
+.venv/
+
+# Variables de entorno (¡CRÍTICO!)
+.env
+
+# Docker
+.docker_temp/
+
+# IDEs
+.vscode/
+.idea/
+
+# Base de Datos (si tuvieras archivos locales de sqlite)
+*.db
+*.sqlite3
+
+# Logs
+*.log
