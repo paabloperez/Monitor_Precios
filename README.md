@@ -1,83 +1,92 @@
-# 🎾 Monitor de Precios: Head Speed Pro Legend
+# 🤖 Monitor de Precios
 
-Este proyecto es un bot autónomo diseñado para rastrear el precio de la raqueta **Head Speed Pro Legend 2025** en Tennis-Point. Utiliza técnicas de web scraping, almacenamiento en base de datos PostgreSQL y notificaciones automáticas vía Telegram.
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat&logo=postgresql&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=flat&logo=docker&logoColor=white)
+![Telegram](https://img.shields.io/badge/Telegram-26A5E4?style=flat&logo=telegram&logoColor=white)
+
+Bot autónomo para rastrear el precio de un producto en Tennis-Point y enviar alertas por Telegram cuando el precio baja. Utiliza scraping mediante LD+JSON, almacena el historial en PostgreSQL y corre 24/7 en Docker.
+
+---
 
 ## 🚀 Características
-* **Scraping Inteligente**: Extrae datos estructurados (LD+JSON) para evitar bloqueos y cambios de diseño web.
-* **Base de Datos Histórica**: Almacena cada variación de precio para análisis futuro.
-* **Alertas Inteligentes**: Solo envía notificaciones a Telegram si el precio baja respecto a la última consulta o baja de un umbral (210€).
-* **Dockerizado**: Funciona 24/7 en contenedores aislados.
+
+- **Scraping con LD+JSON**: extrae datos estructurados de la página para evitar bloqueos y ser robusto a cambios de diseño.
+- **Historial de precios**: almacena cada variación en base de datos para análisis futuro.
+- **Alertas inteligentes**: solo notifica si el precio baja respecto a la última consulta o cae por debajo del umbral configurado.
+- **Dockerizado**: funciona en segundo plano en contenedores aislados.
 
 ---
 
 ## 🛠️ Requisitos Previos
-1. **Docker y Docker Compose** (Versión 2.0+ recomendada).
-2. **Bot de Telegram**: Token obtenido vía [@BotFather](https://t.me/botfather).
-3. **Chat ID**: Tu ID de usuario obtenido vía [@userinfobot](https://t.me/userinfobot).
+
+- [Docker](https://docs.docker.com/get-docker/) y Docker Compose v2.0+
+- **Bot de Telegram**: token obtenido vía [@BotFather](https://t.me/botfather)
+- **Chat ID**: tu ID de usuario obtenido vía [@userinfobot](https://t.me/userinfobot)
 
 ---
 
-## 📦 Instalación y Configuración
+## 📦 Instalación
 
 1. **Configurar variables de entorno**:
-   Crea un archivo `.env` en la raíz con el siguiente contenido:
-   ```bash
-   # Base de Datos (Postgres)
-   DB_USER=admin_tennis
-   DB_PASSWORD=tu_clave_secreta
-   DB_NAME=monitor_precios_db
-   DB_HOST=db_monitor
-   DB_PORT=5432
 
-   # Telegram
-   TELEGRAM_TOKEN=tu_token_de_botfather
-   TELEGRAM_CHAT_ID=tu_chat_id
-   ```
+```bash
+cp .env.example .env
+```
+
+Edita `.env` con tus valores.
 
 2. **Levantar el sistema**:
-   ```bash
-   docker compose up -d --build
-   ```
+
+```bash
+docker compose up -d --build
+```
 
 ---
 
-## 🕹️ Comandos Importantes (Cheat Sheet)
+## 🕹️ Comandos Útiles
 
-### Gestión de Contenedores
+### Gestión de contenedores
+
 | Acción | Comando |
 | :--- | :--- |
-| **Iniciar todo** (en segundo plano) | `docker compose up -d` |
-| **Reconstruir tras cambios** | `docker compose up -d --build` |
-| **Detener el sistema** | `docker compose down` |
-| **Ver estado de contenedores** | `docker ps` |
+| Iniciar todo (en segundo plano) | `docker compose up -d` |
+| Reconstruir tras cambios | `docker compose up -d --build` |
+| Detener el sistema | `docker compose down` |
+| Ver estado de contenedores | `docker ps` |
 
-### Logs y Depuración
+### Logs y depuración
+
 | Acción | Comando |
 | :--- | :--- |
-| **Ver logs del Bot en vivo** | `docker compose logs -f tennis_bot` |
-| **Ver logs de la Base de Datos** | `docker compose logs -f monitor_db` |
-| **Ver últimas 50 líneas** | `docker compose logs --tail=50 tennis_bot` |
+| Ver logs del bot en vivo | `docker compose logs -f tennis_bot` |
+| Ver logs de la base de datos | `docker compose logs -f monitor_db` |
+| Ver últimas 50 líneas | `docker compose logs --tail=50 tennis_bot` |
 
 ### Mantenimiento
+
 | Acción | Comando |
 | :--- | :--- |
-| **Limpiar contenedores huérfanos** | `docker compose down --remove-orphans` |
-| **Acceder a la DB (psql)** | `docker exec -it monitor_db psql -U admin_tennis -d monitor_precios_db` |
+| Limpiar contenedores huérfanos | `docker compose down --remove-orphans` |
+| Acceder a la DB (psql) | `docker exec -it monitor_db psql -U $DB_USER -d $DB_NAME` |
 
 ---
 
 ## 📈 Estructura del Proyecto
-* `/bot`: Código fuente en Python.
-    * `tracker.py`: Lógica de Scraping.
-    * `database.py`: Modelos de SQLAlchemy y conexión a DB.
-    * `notificador.py`: Conexión con la API de Telegram.
-    * `main.py`: Cerebro y bucle de control.
-* `docker-compose.yml`: Orquestador de los servicios.
-* `.env`: Configuración sensible (no subir a repositorios públicos).
+
+```plaintext
+Monitor_Precios/
+├── bot/
+│   ├── main.py          # Bucle de control principal
+│   ├── tracker.py       # Lógica de scraping
+│   ├── database.py      # Modelos SQLAlchemy y conexión a DB
+│   └── notificador.py   # Integración con la API de Telegram
+├── docker-compose.yml
+└── .env.example
+```
 
 ---
 
 ## ⚖️ Licencia
-Este proyecto es de uso personal y educativo. Respeta siempre los términos de servicio de las webs que rastrees.
 
----
+Proyecto de uso personal y educativo. Respeta siempre los términos de servicio de las webs que rastrees.
